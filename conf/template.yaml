@@ -1,0 +1,18 @@
+redis_config:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+
+db_config:
+  addr: "127.0.0.1"
+  port: "3306"
+  password: ""
+  user_name: "root"
+  db_name: "bard"
+
+pay_config:
+  appid: ""
+  app_private_key: ""
+  app_public_key: ""
+  ali_public_key: ""
+  is_online: false
