@@ -44,7 +44,7 @@ CREATE TABLE `user` (
   `SMS_phone_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `SMS_seed_phone_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `recovery_codes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  -- your personal column
+  -- Add user information: add your col here
   `user_id` int NOT NULL,
   `bard_id` int NOT NULL,
   `created_time` bigint NOT NULL,
