@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/KAMIENDER/golang-scaffold/infra/config"
 	"github.com/KAMIENDER/golang-scaffold/infra/database/nosql"
 
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,8 @@ type AuthManager struct {
 	ab *authboss.Authboss
 }
 
-func NewAuthManager(db *gorm.DB, nosqlDB nosql.NoSQLDB) (*AuthManager, error) {
+// NewAuthManager You can customize the settings of Auth according to your own needs.
+func NewAuthManager(conf *config.Config, db *gorm.DB, nosqlDB nosql.NoSQLDB) (*AuthManager, error) {
 	authDataBase := NewDBStorer(db, nosqlDB)
 	var (
 		sessionStore abclientstate.SessionStorer
@@ -80,7 +82,7 @@ func NewAuthManager(db *gorm.DB, nosqlDB nosql.NoSQLDB) (*AuthManager, error) {
 	// email sender config
 	ab.Config.Mail.From = "ones_kami_sama@qq.com"
 	ab.Config.Mail.FromName = "bard"
-	ab.Config.Core.Mailer = &EmailSender{}
+	ab.Config.Core.Mailer = NewEmailSender(conf)
 
 	// Here we initialize the bodyreader as something customized in order to accept a name
 	// parameter for our user as well as the standard e-mail and password.
@@ -100,7 +102,7 @@ func NewAuthManager(db *gorm.DB, nosqlDB nosql.NoSQLDB) (*AuthManager, error) {
 		FieldName: "name", Required: true,
 		MinLength: 2,
 	}
-	// 可以自己添加自定义字段，包含必填与非必填
+	// You can add custom information that you need during registration.
 	bardIDRule := defaults.Rules{
 		FieldName: "bard_ID", Required: true,
 		MustMatch:  regexp.MustCompile("\\d{5,}"),
@@ -146,6 +148,7 @@ func NewAuthManager(db *gorm.DB, nosqlDB nosql.NoSQLDB) (*AuthManager, error) {
 	}, nil
 }
 
+// SetupAuthBoss Used to set the path prefix used by Auth.
 func (m *AuthManager) SetupAuthBoss(r *gin.Engine) {
 	r.Any("/auth/*w", gin.WrapH(http.StripPrefix("/auth", m.ab.LoadClientStateMiddleware(m.ab.Config.Core.Router))))
 }
@@ -158,9 +161,9 @@ func (h *nextRequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.c.Next()
 }
 
-// 为handler添加authboss校验中间件
+// WrapHandler Add Authboss validation middleware for the handler.
 func (m *AuthManager) WrapHandler(handler gin.HandlerFunc) gin.HandlerFunc {
-	// 执行顺序与列表顺序一致
+	// The execution order is consistent with the order in the list.
 	authMiddleware := []func(h http.Handler) http.Handler{
 		m.ab.LoadClientStateMiddleware,
 		authboss.Middleware(m.ab, true, false, false),

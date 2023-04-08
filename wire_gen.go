@@ -7,6 +7,7 @@
 package main
 
 import (
+	"github.com/KAMIENDER/golang-scaffold/infra/auth"
 	"github.com/KAMIENDER/golang-scaffold/infra/config"
 	"github.com/KAMIENDER/golang-scaffold/infra/database/mysql"
 	"github.com/KAMIENDER/golang-scaffold/infra/database/nosql"
@@ -28,14 +29,19 @@ func NewHandler() (*server.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
+	authManager, err := auth.NewAuthManager(configConfig, db, redis)
+	if err != nil {
+		return nil, err
+	}
 	handler := &server.Handler{
 		Router:      engine,
 		NoSQLClient: redis,
 		DB:          db,
+		AuthManager: authManager,
 	}
 	return handler, nil
 }
 
 // wire.go:
 
-var BardSet = wire.NewSet(config.NewConfig, nosql.NewRedis, mysql.NewDatabase, gin.New, wire.Struct(new(server.Handler), "*"), wire.Bind(new(nosql.NoSQLDB), new(*nosql.Redis)))
+var BardSet = wire.NewSet(config.NewConfig, nosql.NewRedis, mysql.NewDatabase, gin.New, wire.Struct(new(server.Handler), "*"), auth.NewAuthManager, wire.Bind(new(nosql.NoSQLDB), new(*nosql.Redis)))

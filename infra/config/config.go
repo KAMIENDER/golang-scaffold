@@ -13,6 +13,14 @@ type Config struct {
 	RedisConf RedisConfig `yaml:"redis_config"`
 	DBConf    DBConfig    `yaml:"db_config"`
 	PayConf   PayConfig   `yaml:"pay_config"`
+	EmailConf EmailConfig `yaml:"email_config"`
+}
+
+type EmailConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	UserName string `yaml:"user_name"`
+	PassWord string `yaml:"password"`
 }
 
 type PayConfig struct {

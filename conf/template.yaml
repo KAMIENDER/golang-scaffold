@@ -16,3 +16,9 @@ pay_config:
   app_public_key: ""
   ali_public_key: ""
   is_online: false
+
+email_config:
+  host: ""
+  port: 25
+  user_name: ""
+  password: ""

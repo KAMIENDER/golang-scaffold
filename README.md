@@ -29,13 +29,15 @@ replace github.com/KAMIENDER/golang-scaffold with your pkg name
 ## DataBase
 * 增加你的数据库表
 * 修改infra/database/mysql/gen_tool/mysql_gen.go, 添加你的数据库对应的生成配置代码, 参考已有的user表的生成代码
-* 执行infra/database/mysql/gen_tool/mysql_gen.go, 生成对应的golang结构体以及对应的CURD代码
+* 执行infra/database/mysql/gen_tool/mysql_gen.go, 它会连接你的数据库,根据数据库的表信息, 生成对应的golang结构体以及对应的CURD代码
 
 ## User Auth
 
 最基础的用户表: ddl/user.sql
 * 全局搜索 `Add user information` , 根据评论提示生成增加你的user信息以及对应操作
-
+* 修改了user.sql之后不要忘记在你的数据库执行对应的建表sql, 然后执行infra/database/mysql/gen_tool/mysql_gen.go来更新你的user结构
+* 默认使用/auth/*作为auth使用的路径
+* 需要进行用户登入校验的接口，在进行gin的配置之前, 调用auth.WrapHandler方法进行封装
 # Dependency
 **Auth:**
 

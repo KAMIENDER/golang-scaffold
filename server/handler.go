@@ -35,6 +35,7 @@ type Handler struct {
 	Router      *gin.Engine
 	NoSQLClient nosql.NoSQLDB
 	DB          *gorm.DB
+	AuthManager *auth.AuthManager
 }
 
 func (h *Handler) innerInit() {
@@ -43,11 +44,7 @@ func (h *Handler) innerInit() {
 		gin.Recovery(),
 	}...)
 
-	authManager, err := auth.NewAuthManager(h.DB, h.NoSQLClient)
-	if err != nil {
-		panic(err)
-	}
-	authManager.SetupAuthBoss(h.Router)
+	h.AuthManager.SetupAuthBoss(h.Router)
 
 }
 

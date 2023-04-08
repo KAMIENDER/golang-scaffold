@@ -165,7 +165,7 @@ func (u *User) PutArbitrary(values map[string]string) {
 	if n, ok := values["name"]; ok {
 		u.Name = n
 	}
-	// 保留需要的自定义字段, 包含必填与非必填
+	// Add user information: deal with your register
 	if n, ok := values["bard_ID"]; ok {
 		u.BardID, _ = strconv.Atoi(n)
 	}
@@ -239,9 +239,9 @@ func (u User) GetOAuth2Expiry() (expiry time.Time) { return *u.OAuth2Expiry }
 
 // GetArbitrary from user
 func (u User) GetArbitrary() map[string]string {
-	// 获取自定义信息, 包含必填非必填
 	return map[string]string{
-		"name":    u.Name,
+		"name": u.Name,
+		// Add user information: Processing your custom fields during registration.
 		"bard_ID": strconv.Itoa(u.BardID),
 	}
 }
@@ -310,13 +310,10 @@ func (m DBStorer) New(_ context.Context) authboss.User {
 	}
 }
 
-// Create the user, 需要检测必填字短
+// Create the user
 func (m DBStorer) Create(ctx context.Context, user authboss.User) error {
 	db := basic.Use(m.db).User
 	u := user.(*User)
-	if u.BardID == 0 {
-		return errors.New("miss bard ID")
-	}
 	return db.WithContext(ctx).Save(u.User)
 }
 
